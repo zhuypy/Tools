@@ -1,0 +1,1 @@
+D:\record\record.exe 30
