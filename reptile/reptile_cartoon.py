@@ -1,6 +1,6 @@
 from util import *
 import socket
-socket.setdefaulttimeout(20)
+# socket.setdefaulttimeout(20)
 
 LOG_FILE = r'D:\test\cartoon.log'
 SAVE_PATH = r'D:\test\cartoon'
@@ -26,7 +26,10 @@ def getImgList(url_html):
     resp = vistUrl(url_html, False)
     pattern = r'<img src="(https:.*?.jpg)"'
     url_img = getUrlList(pattern, resp.text)
+    print('-------------------------------------------------------------------------------------------')
     print(resp.text)
+    print('-------------------------------------------------------------------------------------------')
+    print(url_img)
 
 def test():
     url_home = 'https://www.fzdm.com/manhua/74/'
