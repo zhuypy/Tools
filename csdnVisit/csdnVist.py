@@ -15,8 +15,9 @@ def vistUrl(url,isGetHtml=False):
 	
 def getBlogList(html_str):
 	
-	pattern = r'<a href="(https.*?/[0-9]{9})".*'
+	pattern = r'<a href="(https://blog.csdn.net/zy1007531447/article/details/[0-9]{9})"'
 	blog_list = re.findall(pattern,html_str)
+	print(blog_list)
 	return list(set(blog_list))
 
 def vist(url_list):
@@ -42,7 +43,6 @@ if __name__ == '__main__':
 	home_url = 'https://blog.csdn.net/zy1007531447'
 	html_str = vistUrl(home_url,isGetHtml=True)
 	blog_url_list = getBlogList(html_str)
-
 	# vist(blog_url_list)
 	updateCSDNListFile(blog_url_list)
 	
