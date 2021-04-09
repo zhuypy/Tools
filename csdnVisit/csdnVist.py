@@ -29,6 +29,7 @@ def vist(url_list):
 			print(vistUrl(blog_url),time.strftime('%Y-%m-%d %H:%M:%S',time.localtime()))
 
 def updateCSDNListFile(url_list):
+	print(len(url_list))
 	file = r'D:\work\jmeter\test\data.txt'
 	with open(file,'w+',encoding='utf-8') as fb:
 		for blog_url in url_list:
@@ -42,6 +43,7 @@ def updateCSDNListFile(url_list):
 if __name__ == '__main__':
 	home_url = 'https://blog.csdn.net/zy1007531447'
 	html_str = vistUrl(home_url,isGetHtml=True)
+	print(html_str)
 	blog_url_list = getBlogList(html_str)
 	# vist(blog_url_list)
 	updateCSDNListFile(blog_url_list)
