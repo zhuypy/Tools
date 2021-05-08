@@ -1,16 +1,18 @@
 # coding=utf-8
 import subprocess, os, sys
 import time
-import win32api,win32con
 import psutil
+
+#------------------------------------------TEST-------------------------------------------------------------
+# BASE_PATH = os.path.dirname(os.path.realpath(sys.executable))
+BASE_PATH = r'D:\ku\Tools\record'
+# ------------------------------------------TEST------------------------------------------------------------
 
 def loginfo(msg):
     currentTime = time.strftime('%Y_%m_%d_%H_%M_%S', time.localtime())
     msg = '['+currentTime+']'+str(msg)
-    # ------------------------------------------TEST-------------------------------------------------------------
-    # logdir = os.path.join(os.path.dirname(os.path.realpath(sys.executable)),'log')
-    logdir = os.path.join(r'D:\workspace\recordVideo_v1', 'log')
-    # ------------------------------------------TEST-------------------------------------------------------------
+
+    logdir = os.path.join(BASE_PATH, 'log')
     if not os.path.isdir(logdir):
         os.makedirs(logdir)
 
@@ -31,30 +33,31 @@ def getSaveFileName(avidir):
     fileName = os.path.join(avidir,'temp',time_sub[0],time_sub[1],time_sub[2],currentTime+'.avi')
     if not os.path.isdir(os.path.dirname(fileName)):
         os.makedirs(os.path.dirname(fileName))
-    dirName = os.path.join(avidir,'temp')
-    win32api.SetFileAttributes(dirName,win32con.FILE_ATTRIBUTE_HIDDEN)
     return fileName
 
 def judgeprocess(processName):
-    loginfo('start judgeprocess ffmpeg-----------------------------------')
+    loginfo('start judgeprocess %s-----------------------------------'%(processName))
     pl = psutil.pids()
     # loginfo(str(pl))
     for pid in pl:
         # loginfo(psutil.Process(pid).name())
-        if (processName in psutil.Process(pid).name()) or(psutil.Process(pid).name() == processName ):
+        processName = processName.lower()
+        psName = psutil.Process(pid).name().lower()
+        if ((processName in psName) or (processName == psName) ):
+            # loginfo(psutil.Process(pid).name())
             loginfo('ps found')
             return True
-    loginfo('ffmepeg not found')
+    loginfo('%s not found'%(processName))
     return False
 
 def startRecord(saveTime,avidir):
     loginfo('start startRecord-----------------------------------')
-    # ------------------------------------------TEST-------------------------------------------------------------
-    # ffmpegPath = os.path.join(os.path.dirname(os.path.realpath(sys.executable)), 'tool', 'fm', 'ffmpeg.exe')
-    ffmpegPath = os.path.join(r'D:\workspace\recordVideo_v1', 'tool', 'fm', 'ffmpeg.exe')
-    # ------------------------------------------TEST-------------------------------------------------------------
+    ffmpegPath = os.path.join(BASE_PATH, 'tool', 'fm', 'ffmpeg.exe')
     while True:
         os.system('taskkill /F /IM ffmpeg.exe')
+        if  not findExeStart():
+            time.sleep(5)
+            continue
         try:
             filePath = getSaveFileName(avidir)
             loginfo(filePath)
@@ -65,18 +68,38 @@ def startRecord(saveTime,avidir):
             for i in range(saveTime*6):
                 time.sleep(10)
                 loginfo('check ffmpeg ----%s---'%(i))
-                if judgeprocess('ffmpeg.exe'):
+                if judgeprocess('ffmpeg.exe') and findExeStart():
                     loginfo('found ffmpeg on----')
-                else:
+                elif (not judgeprocess('ffmpeg.exe')) and findExeStart():
                     filePath = getSaveFileName(avidir)
                     loginfo(filePath)
                     cmd = ffmpegPath + "  -f gdigrab -framerate 60 -offset_x 0 -offset_y 0 -video_size 1366x768 -i desktop " + filePath
                     subprocess.Popen(cmd, shell=True)
                     loginfo('retry start ffmpeg')
+                elif not findExeStart():
+                    loginfo('stop recoed')
+                    break
         except Exception as e:
             loginfo(e)
         finally:
             os.system('taskkill /F /IM ffmpeg.exe')
+            
+def findExeStart():
+    cofpath_exe = os.path.join(BASE_PATH, 'tool', 'conf', 'exe.properties')
+    cofpath_mode = os.path.join(BASE_PATH, 'tool', 'conf', 'mode.properties')
+    
+    exe_list = getConf(cofpath_exe).split('=')
+    mode  = getConf(cofpath_mode)
+    
+    if mode == 'all':
+        return judgeprocess(exe_list[0]) and judgeprocess(exe_list[1]) and judgeprocess(exe_list[2])
+        
+    elif mode == 'any':
+        return judgeprocess(exe_list[0]) or judgeprocess(exe_list[1]) or judgeprocess(exe_list[2])
+    else:
+        loginfo('Wrong mode configuration, please configure "all" or "any" in the mode.properties file')
+        return False
+
 
 if __name__ == '__main__':
     try:
@@ -86,13 +109,9 @@ if __name__ == '__main__':
         except:
             saveTime = 1
         loginfo('save Time = %s'%(saveTime))
-
-        #------------------------------------------TEST-------------------------------------------------------------
-        # cofpath = os.path.join(os.path.dirname(os.path.realpath(sys.executable)),'tool','conf','conf.properties')
-        cofpath = os.path.join(r'D:\workspace\recordVideo_v1','tool','conf','conf.properties')
-        # ------------------------------------------TEST-------------------------------------------------------------
+        cofpath_avidir = os.path.join(BASE_PATH, 'tool', 'conf', 'conf.properties')
         try:
-            avidir = getConf(cofpath)
+            avidir = getConf(cofpath_avidir)
         except:
             avidir = os.path.dirname(os.path.realpath(sys.executable))
 
@@ -100,3 +119,6 @@ if __name__ == '__main__':
         startRecord(saveTime,avidir)
     except Exception as e:
         loginfo(e)
+    
+    
+    

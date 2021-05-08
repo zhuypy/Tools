@@ -46,16 +46,17 @@ def updateCSDNListFile(url_list):
 
 
 if __name__ == '__main__':
-    # home_url = 'https://blog.csdn.net/community/home-api/v1/get-business-list?page=1&size=100&businessType=blog&orderby=&noMore=false&username=zy1007531447'
+    home_url = 'https://blog.csdn.net/community/home-api/v1/get-business-list?page=1&size=100&businessType=blog&orderby=&noMore=false&username=zy1007531447'
     # html_str = vistUrl(home_url)
     # blog_url_list = getBlogList(html_str)
     # updateCSDNListFile(blog_url_list)
 
     import requests
 
-    url = "http://blog.csdn.net/community/home-api/v1/get-business-list"
-    params ={'page':'1','size':'100','businessType':'blog','orderby':'','noMore':'false','username':'zy1007531447'}
+    # url = "http://blog.csdn.net/community/home-api/v1/get-business-list"
+    # params ={'page':'1','size':'100','businessType':'blog','orderby':'','noMore':'false','username':'zy1007531447'}
 
-    response = requests.request("GET", url, params= params)
+    response = requests.post(home_url)
 
-    print(response.content)
+    print(response.text)
+    print(response.content.decode())

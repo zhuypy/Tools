@@ -2,12 +2,14 @@
 
 	1、解压工具到任意D盘目录
 	2、配置conf.properties文件，D:\RE
-	3、执行attrib +s +a +h +r D:\RE,确认RE彻底隐藏，执行attrib +s +a +h +r D:\record,确认record彻底隐藏
-	4、确认start.bat和startvbs中的执行文件路径
+    	3、配置exe.properties文件，Firefox
+    	4、配置mode.properties文件，all/any
+	5、执行attrib +s +a +h +r D:\RE,确认RE彻底隐藏，执行attrib +s +a +h +r D:\record,确认record彻底隐藏
+	6、确认start.bat和startvbs中的执行文件路径
 	
 	1、新建非管理员用户zhuy,用户组zhuys，将admin和zhuy添加至zhuys组
 	2、secpol.msc-本地安全策略-本地策略-用户权限分配-作为批处理作业登录-添加用户或组zhuy
-	3、使用admin新建任务计划程序，使用zhuy执行任务
+	3、使用admin，控制面板-管理工具-新建任务计划程序，使用zhuy执行任务
 
 	1、gpedit.msc-用户配置-系统-不运行指定程序taskmgr.exe、cmd.exe、regedit.exe[mmc.exe]
 	2、控制面板-系统与安全-防火墙-高级设置-本地计算机上的高级安全windows defender防火墙（左侧目录更目录）-windows defender 防火墙属性，三种类型的出入站全部禁止
