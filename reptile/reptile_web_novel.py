@@ -42,7 +42,7 @@ def getCategoryList(homeHtml):
         dict_category_url[categoryList[i]] = URL.replace(URL.split('/')[-1],'') + urlList[i]
     
     return dict_category_url
-  
+    
 def getNovelDict(homeHtml):
     '''
     获取小说列表
@@ -86,8 +86,7 @@ def mkdirForDict(dict_all_url):
                 print('下载完成')
             except:
                 print('下载%s失败，或许这不是一本小说'%(novel_name))
-        
-        
+             
 if __name__ == '__main__':
     
     homeHtml = getHomeHtml(URL)
